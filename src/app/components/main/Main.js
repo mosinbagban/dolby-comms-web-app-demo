@@ -2,9 +2,20 @@ import React, { useEffect, useState } from "react";
 import LocalizedStrings from "react-localization";
 import { useLocation } from "react-router-dom";
 
+import styled, { ThemeProvider } from "styled-components";
+import WebFont from 'webfontloader';
+
+import { GlobalStyles } from '../../../theme/GlobalStyles';
+import {useTheme} from '../../../theme/useTheme';
+
 import Conference from "./conference";
 import dolbyLogo from "../../../static/images/dolbyio-logo.png";
 import axios from "axios";
+import ThemeSelector from "../../../theme/ThemeSelector";
+import Dialog from "../Dialog";
+import CreateThemeContent from "../../../theme/CreateThemeContent";
+
+
 
 let strings = new LocalizedStrings({
   en: {
@@ -35,6 +46,11 @@ let strings = new LocalizedStrings({
   },
 });
 
+// 2: Create a cotainer
+const Container = styled.div`
+  margin: 5px auto 5px auto;
+`;
+
 function useQuery() {
   const { search } = useLocation();
   return React.useMemo(() => new URLSearchParams(search), [search]);
@@ -56,9 +72,38 @@ const Main = ({ }) => {
   const [ showOptions, setShowOptions ] = useState(false);
   const [ joinSubmitted, setJoinSubmitted ] = useState(false);
 
+  const {theme, themeLoaded, getFonts} = useTheme();
+  const [selectedTheme, setSelectedTheme] = useState(theme);
+  const [showDialog, setShowDialog] = useState(false);
+  const [newTheme, setNewTheme] = useState();
+
+
   const toggleConfiguration = () => {
     setUseDefaultSettings(!useDefaultSettings);
   };
+
+  useEffect(() => {
+    setSelectedTheme(theme);
+   }, [themeLoaded]);
+
+  // 4: Load all the fonts
+  useEffect(() => {
+    WebFont.load({
+      google: {
+        families: getFonts()
+      }
+    });
+  });
+
+  const manageDialog = () => {
+    setShowDialog(!showDialog);
+  }
+
+  const createTheme = newTheme => {
+    console.log(newTheme);
+    setShowDialog(false);
+    setNewTheme(newTheme);
+  }
 
 const consumerKey = "52M3D538jQTc8iNFjOZOFQ==";
 const consumerSecret = "Fb7QTdgfYNmjrfhTzKVyA8l0l2cVVetmlptyOgNMOY0=";
@@ -128,19 +173,43 @@ const consumerSecret = "Fb7QTdgfYNmjrfhTzKVyA8l0l2cVVetmlptyOgNMOY0=";
 
   if (joinSubmitted) {
     return (
-      <Conference
-        conferenceAlias={alias}
-        accessToken={getAccessToken}
-        username={username}
-        handleOnLeave={handleOnLeave}
-        useDefaultSettings={useDefaultSettings}
-        isListener={isListener}
+      <>
+ 
+      {
+        themeLoaded && <ThemeProvider theme={ selectedTheme }>
+          <Container style={{fontFamily: selectedTheme.font}}>
+          <Conference
+            conferenceAlias={alias}
+            accessToken={getAccessToken}
+            username={username}
+            handleOnLeave={handleOnLeave}
+            useDefaultSettings={useDefaultSettings}
+            isListener={isListener}
       />
+          </Container>
+        </ThemeProvider>
+      }
+      </>
+      
     );
   }
 
   return (
     <div className="content-wrapper">
+      {
+      themeLoaded && <ThemeProvider theme={ selectedTheme }>
+        <GlobalStyles/>
+        <Container style={{fontFamily: selectedTheme.font}}>
+        <ThemeSelector setter={ setSelectedTheme } /> 
+        <button className="btn" onClick={ manageDialog }>Create a Theme</button>
+          <Dialog 
+            header="Create a Theme"
+            body={ <CreateThemeContent create={ createTheme }/> }
+            open={ showDialog } 
+            callback = { manageDialog }/>
+        </Container>
+      </ThemeProvider>
+    }
       <div className="content-sample">
         <div className="dolby-container-logo">
           <img src={dolbyLogo} alt="Dolby.io" />
@@ -155,6 +224,7 @@ const consumerSecret = "Fb7QTdgfYNmjrfhTzKVyA8l0l2cVVetmlptyOgNMOY0=";
               id="accessToken"
               type="text"
               className="validate"
+              hidden
             />
           </div>
         )}

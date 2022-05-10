@@ -13,6 +13,9 @@ import Main from "./components/main/Main";
 import "../styles/main.less";
 import ConfTypeChooser from "./components/appcreator/ConfTypeChooser";
 
+import * as themes from '../theme/schema.json';
+import { setToLS } from '../utils/storage';
+
 const ASSET_PATH = process.env.ASSET_PATH || "/";
 
 const reducers = combineReducers({
@@ -29,7 +32,16 @@ console.group('Dolby.io Conference Application');
 console.log('GitHub repository: https://github.com/dolbyio-samples/comms-conference-app');
 console.groupEnd();
 
-ReactDOM.render(
+const Index = () => {
+  setToLS('all-themes', themes.default);
+  return(
+    <App />
+  )
+}
+
+
+const App =()=>{
+return(
   <VoxeetProvider store={configureStore()}>
     <Router basename={ASSET_PATH}>
     <Switch>
@@ -41,6 +53,11 @@ ReactDOM.render(
           </Route>
         </Switch>
     </Router>
-  </VoxeetProvider>,
+  </VoxeetProvider>
+);
+}
+
+ReactDOM.render(
+  <Index />,
   document.getElementById("app")
 );
