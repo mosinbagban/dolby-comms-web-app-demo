@@ -43,8 +43,7 @@ const next=()=>{
             <div className="blockButton">
           <button
             id="join"
-            type="button"
-            className="waves-effect waves-light"
+            className="btn"
             onClick={next}
           >
             <span>Next</span>

@@ -9,12 +9,14 @@ import { GlobalStyles } from '../../../theme/GlobalStyles';
 import {useTheme} from '../../../theme/useTheme';
 
 import Conference from "./conference";
-import dolbyLogo from "../../../static/images/dolbyio-logo.png";
+import dolbyLogo from "../../../static/images/dolby.png";
 import axios from "axios";
 import ThemeSelector from "../../../theme/ThemeSelector";
 import Dialog from "../Dialog";
 import CreateThemeContent from "../../../theme/CreateThemeContent";
-
+import { Box } from "@mui/system";
+import { Button, TextField, Typography } from "@mui/material";
+import { ColorPicker, useColor } from "react-color-palette";
 
 
 let strings = new LocalizedStrings({
@@ -76,7 +78,7 @@ const Main = ({ }) => {
   const [selectedTheme, setSelectedTheme] = useState(theme);
   const [showDialog, setShowDialog] = useState(false);
   const [newTheme, setNewTheme] = useState();
-
+  const [color, setColor] = useColor("hex", "#121212");
 
   const toggleConfiguration = () => {
     setUseDefaultSettings(!useDefaultSettings);
@@ -195,8 +197,8 @@ const consumerSecret = "Fb7QTdgfYNmjrfhTzKVyA8l0l2cVVetmlptyOgNMOY0=";
   }
 
   return (
-    <div className="content-wrapper">
-      {
+    <div >
+      {/* {
       themeLoaded && <ThemeProvider theme={ selectedTheme }>
         <GlobalStyles/>
         <Container style={{fontFamily: selectedTheme.font}}>
@@ -207,10 +209,11 @@ const consumerSecret = "Fb7QTdgfYNmjrfhTzKVyA8l0l2cVVetmlptyOgNMOY0=";
             body={ <CreateThemeContent create={ createTheme }/> }
             open={ showDialog } 
             callback = { manageDialog }/>
+           
         </Container>
       </ThemeProvider>
-    }
-      <div className="content-sample">
+    } */}
+      {/* <div className="content-sample">
         <div className="dolby-container-logo">
           <img src={dolbyLogo} alt="Dolby.io" />
         </div>
@@ -282,9 +285,8 @@ const consumerSecret = "Fb7QTdgfYNmjrfhTzKVyA8l0l2cVVetmlptyOgNMOY0=";
         </React.Fragment>}
 
         <div className="blockButton">
-          <button
-            id="join"
-            type="button"
+          <button  
+          id="join"
             disabled={!alias || alias.length === 0}
             className={
               !getAccessToken || getAccessToken.length <= 0 || !alias || alias.length <= 0
@@ -293,12 +295,88 @@ const consumerSecret = "Fb7QTdgfYNmjrfhTzKVyA8l0l2cVVetmlptyOgNMOY0=";
             }
             onClick={() => setJoinSubmitted(true)}
           >
-            <span>{strings.next}</span>
+            {strings.next}
           </button>
         </div>
+        <a href="https://heroku.com/deploy?template=https://github.com/mosinbagban/dolby-io-backend-demo">
+        <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy" />
+        </a>
+      </div> */}
+
+      <div>
+      <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',  
+            flexDirection: 'column',
+            alignItems: 'center',
+            backgroundColor : '#f7f5f6',
+            paddingTop: '100px',
+            paddingRight: '100px',
+            paddingLeft:'100px',
+            paddingBottom: '150px'
+          }}
+        >
+          <img src={dolbyLogo} width='100px'
+            style={{paddingBottom:'50px'}}
+          />
+          <Typography component="h1" variant="h5" 
+            style={{paddingBottom:'20px'}}>
+            Welcome to Dolby.io conference app
+          </Typography>
+          <Box component="form"  noValidate sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              fullWidth
+              id="conference"
+              label="Conference name"
+              name="conference"
+              autoFocus
+              onChange={(e) => setAlias(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              id="username"
+              label="Your name"
+              name="username"
+              autoComplete="name"
+              onChange={(e) => setUsername(e.target.value)}
+              autoFocus
+            />  
+
+            {/* <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            /> */}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2, backgroundColor: color.hex }}
+              onClick={() => setJoinSubmitted(true)}
+            >
+              Join
+            </Button>
+            {/* <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="#" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid> */}
+          </Box>
+        </Box>
       </div>
+      
+      
       <div className="copyright">
-        <span>Copyright © {new Date().getFullYear()} Dolby.io — {strings.copyright}</span>
+        <span>Powered by Dolby.io Appbuilder— {strings.copyright}</span>
       </div>
       </div>
   );

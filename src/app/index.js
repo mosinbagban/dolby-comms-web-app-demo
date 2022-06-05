@@ -49,7 +49,7 @@ return(
             <Main />
           </Route>
           <Route path="/">
-            <ConfTypeChooser />
+          <Main />
           </Route>
         </Switch>
     </Router>
