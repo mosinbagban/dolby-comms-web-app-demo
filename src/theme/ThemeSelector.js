@@ -16,7 +16,7 @@ const ThemedButton = styled.button`
 `;
 
 const Wrapper = styled.li`
-    padding: 48px;
+    padding: 5px;
     text-align: center;
     border-radius: 4px;
     border: 1px solid #000;
@@ -68,7 +68,7 @@ export default (props) => {
             <Wrapper style={{backgroundColor: `${data[_.camelCase(props.theme.name)].colors.body}`, 
                     color: `${data[_.camelCase(props.theme.name)].colors.text}`, 
                     fontFamily: `${data[_.camelCase(props.theme.name)].font}`}}>
-                    <span>Click on the button to set this theme</span>
+                    {/* <span>Click on the button to set this theme</span> */}
                 <ThemedButton onClick={ (theme) => themeSwitcher(props.theme) }
                     style={{backgroundColor: `${data[_.camelCase(props.theme.name)].colors.button.background}`, 
                     color: `${data[_.camelCase(props.theme.name)].colors.button.text}`,
