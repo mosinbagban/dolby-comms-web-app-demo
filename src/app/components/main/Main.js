@@ -78,7 +78,8 @@ const Main = ({ }) => {
   const [selectedTheme, setSelectedTheme] = useState(theme);
   const [showDialog, setShowDialog] = useState(false);
   const [newTheme, setNewTheme] = useState();
-  const [color, setColor] = useColor("hex", "#121212");
+  const [color, setColor] = useState("#121212");
+  const [appname, setAppName] = useState('Dolby.io');
 
   const toggleConfiguration = () => {
     setUseDefaultSettings(!useDefaultSettings);
@@ -123,6 +124,7 @@ const consumerSecret = "Fb7QTdgfYNmjrfhTzKVyA8l0l2cVVetmlptyOgNMOY0=";
 
   useEffect(()=>{
         getToken();
+        getAppConfiguration();
   }, []);
 
   function getToken() {
@@ -167,6 +169,30 @@ const consumerSecret = "Fb7QTdgfYNmjrfhTzKVyA8l0l2cVVetmlptyOgNMOY0=";
           console.log(error);
         });
     
+   }
+
+   function getAppConfiguration() {
+    const config = {
+      method: 'get',
+      url: 'https://dolby-io-backend-demo.herokuapp.com/api/appbuilders',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin':'*'
+      }
+    };
+  
+  axios(config)
+      .then(function (response) {
+        if(response && response.data.length > 0){
+          console.log('themecolor: ' + response.data[0].themecolor);
+          setColor(response.data[0].themecolor);
+          setAppName( response.data[0].appname);
+        }
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
    }
   
   const handleOnLeave = () => {
@@ -322,7 +348,7 @@ const consumerSecret = "Fb7QTdgfYNmjrfhTzKVyA8l0l2cVVetmlptyOgNMOY0=";
           />
           <Typography component="h1" variant="h5" 
             style={{paddingBottom:'20px'}}>
-            Welcome to Dolby.io conference app
+            Welcome to {appname} conference app
           </Typography>
           <Box component="form"  noValidate sx={{ mt: 1 }}>
             <TextField
@@ -353,7 +379,7 @@ const consumerSecret = "Fb7QTdgfYNmjrfhTzKVyA8l0l2cVVetmlptyOgNMOY0=";
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2, backgroundColor: color.hex }}
+              sx={{ mt: 3, mb: 2, backgroundColor: color }}
               onClick={() => setJoinSubmitted(true)}
             >
               Join
